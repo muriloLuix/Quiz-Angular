@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br" ng-app="quizApp">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> | Quiz sobre Angular</title>
+    <link rel="shortcut icon" href="assets/img/Angular_full_color_logo.svg" type="image/x-icon">
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body ng-controller="QuizController as quizCtrl">
+    <div class="container">
+      <h1>Teste seus conhecimentos sobre Angular!</h1>
+      <div class="quiz-box" ng-show="quizCtrl.started && !quizCtrl.finished">
+        <p class="question">{{ quizCtrl.currentQuestion.text }}</p>
+        <div class="options">
+          <div
+            class="option"
+            ng-repeat="option in quizCtrl.currentQuestion.options"
+          >
+            <input
+              type="radio"
+              id="option{{$index}}"
+              ng-model="quizCtrl.selectedOption"
+              ng-value="option"
+            />
+            <label for="option{{$index}}">{{ option }}</label>
+          </div>
+        </div>
+        <button class="check-btn" ng-click="quizCtrl.checkAnswer()">
+          Verificar Resposta
+        </button>
+      </div>
+      <div class="result" ng-show="quizCtrl.finished">
+        <h2>Quiz Finalizado!</h2>
+        <p>
+          Você acertou <span class="score">{{ quizCtrl.score }}</span> de {{
+          quizCtrl.questions.length }} perguntas.
+        </p>
+        <button class="restart-btn" ng-click="quizCtrl.restart()">
+          Reiniciar Quiz
+        </button>
+      </div>
+      <button
+        class="start-btn"
+        ng-click="quizCtrl.startQuiz()"
+        ng-hide="quizCtrl.started || quizCtrl.finished"
+      >
+        Iniciar Quiz
+      </button>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="assets/js/script.js"></script>
+  </body>
+</html>
