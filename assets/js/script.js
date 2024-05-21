@@ -1,4 +1,4 @@
-angular.module("quizApp", []).controller("QuizController", function () {
+angular.module("quizApp", []).controller("QuizController", function ($timeout) {
   let vm = this;
 
   vm.questions = [
@@ -17,28 +17,34 @@ angular.module("quizApp", []).controller("QuizController", function () {
       answer: "JavaScript",
     },
     {
-      text: "O que é um componente em Angular?",
+      text: "Qual o principal motivo para usar Angular?",
       options: [
-        "Uma unidade modular e reutilizável de interface do usuário",
-        "Um elemento HTML",
-        "Uma função JavaScript",
-      ],
-      answer: "Uma unidade modular e reutilizável de interface do usuário",
-    },
-    {
-      text: "O que é o Angular CLI?",
-      options: [
-        "Uma ferramenta de linha de comando para criar e gerenciar projetos Angular",
-        "Uma interface gráfica para o Angular",
-        "Um editor de código para desenvolvimento Angular",
+        "Facilidade de estilação de páginas web",
+        "Integração com sistemas de banco de dados relacionais",
+        "Desenvolvimento eficiente de aplicativos web de página única (SPA)",
       ],
       answer:
-        "Uma ferramenta de linha de comando para criar e gerenciar projetos Angular",
+        "Desenvolvimento eficiente de aplicativos web de página única (SPA)",
     },
     {
-      text: "Qual é o nome da biblioteca JavaScript usada pelo Angular para manipular o DOM?",
-      options: ["React", "Vue.js", "Zone.js"],
-      answer: "Zone.js",
+      text: "Quais são os 3 principais componentes em Angular?",
+      options: [
+        "1 arquivo de estilização, 1 arquivo de marcação e 1 arquivo TypeScript",
+        "1 arquivo de marcação e 1 arquivo TypeScript",
+        "Nenhuma das opções",
+      ],
+      answer:
+        "1 arquivo de estilização, 1 arquivo de marcação e 1 arquivo TypeScript",
+    },
+    {
+      text: "Qual é a principal função do Angular CLI?",
+      options: [
+        "Compilar código JavaScript para o navegador",
+        "Gerenciar estilos e temas de aplicativos web",
+        "Facilitar a criação, construção e manutenção de projetos Angular",
+      ],
+      answer:
+        "Facilitar a criação, construção e manutenção de projetos Angular",
     },
     {
       text: "O que é o TypeScript?",
@@ -50,73 +56,80 @@ angular.module("quizApp", []).controller("QuizController", function () {
       answer: "Um superconjunto tipado de JavaScript",
     },
     {
-      text: "Qual é a função do NgModule em Angular?",
+      text: "Qual a estrutura básica de um Template em Angular",
       options: [
-        "Definir os componentes, diretivas e serviços que pertencem a um módulo",
-        "Gerenciar as rotas da aplicação",
-        "Realizar operações assíncronas",
+        "<h1>{{ title }}</h1>",
+        "<h1>{ title }</h1>",
+        "<h1> title </h1>",
       ],
-      answer:
-        "Definir os componentes, diretivas e serviços que pertencem a um módulo",
+      answer: "<h1>{{ title }}</h1>",
     },
     {
-      text: "O que é data binding em Angular?",
+      text: "O que são Diretivas (Directives)?",
       options: [
-        "A ligação entre os modelos de dados e a visualização da aplicação",
-        "Uma técnica para fazer chamadas AJAX",
-        "Uma forma de fazer consultas em um banco de dados",
+        "São instruções que são apliocadas ao DOM para modificar seu comportamento ou aparência",
+        "Funções para manipular dados em um serviço",
+        "Métodos para configurar roteamento entre páginas",
       ],
       answer:
-        "A ligação entre os modelos de dados e a visualização da aplicação",
+        "São instruções que são apliocadas ao DOM para modificar seu comportamento ou aparência",
     },
     {
-      text: "O que é uma diretiva em Angular?",
+      text: "Qual Event Binding está incorreto?",
       options: [
-        "Um componente Angular que controla um pedaço específico da interface do usuário",
-        "Um elemento HTML personalizado usado para encapsular a lógica de UI",
-        "Uma função JavaScript que manipula eventos do usuário",
+        "<button type='click' = 'onButtonClick()'> Clique aqui </button>",
+        "<button click = 'onButtonClick()> Clique aqui </button>",
+        "<button (click)='onButtonClick()'>Clique aqui </button>",
       ],
-      answer:
-        "Um elemento HTML personalizado usado para encapsular a lógica de UI",
+      answer: "<button (click)='onButtonClick()'>Clique aqui </button>",
     },
     {
-      text: "O que é um serviço em Angular?",
+      text: "O que o comando ng new faz no Angular CLI?",
       options: [
-        "Um módulo que fornece funcionalidades para outros módulos",
-        "Um tipo de dado para armazenar informações do usuário",
-        "Uma função que renderiza templates HTML",
+        "Inicia um servidor de desenvolvimento para um projeto Angular",
+        "Cria um novo serviço em um projeto Angular existente",
+        "Cria um novo projeto Angular com a estrutura inicial",
       ],
       answer: "Um módulo que fornece funcionalidades para outros módulos",
     },
   ];
 
   vm.currentQuestion = {};
-  vm.selectedOption = "";
+  vm.selectedOptions = [];
   vm.score = 0;
   vm.questionIndex = 0;
   vm.started = false;
   vm.finished = false;
+  vm.showCorrectness = false;
+  vm.optionsDisabled = false;
 
   vm.startQuiz = function () {
     vm.started = true;
     vm.finished = false;
     vm.score = 0;
     vm.questionIndex = 0;
+    vm.showCorrectness = false;
     vm.currentQuestion = vm.questions[vm.questionIndex];
   };
 
   vm.checkAnswer = function () {
-    if (vm.selectedOption === vm.currentQuestion.answer) {
+    if (vm.selectedOptions[vm.questionIndex] === vm.currentQuestion.answer) {
       vm.score++;
     }
-    vm.nextQuestion();
+    vm.optionsDisabled = true;
+    vm.showCorrectness = true;
+    $timeout(function () {
+      vm.nextQuestion();
+      // Reinicia as variáveis ​​de controle para a próxima pergunta
+      vm.optionsDisabled = false;
+      vm.showCorrectness = false;
+    }, 2000);
   };
 
   vm.nextQuestion = function () {
     vm.questionIndex++;
     if (vm.questionIndex < vm.questions.length) {
       vm.currentQuestion = vm.questions[vm.questionIndex];
-      vm.selectedOption = "";
     } else {
       vm.finishQuiz();
     }
@@ -133,5 +146,6 @@ angular.module("quizApp", []).controller("QuizController", function () {
     vm.score = 0;
     vm.questionIndex = 0;
     vm.currentQuestion = vm.questions[vm.questionIndex];
+    vm.selectedOptions = [];
   };
 });
