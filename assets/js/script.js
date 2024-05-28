@@ -90,7 +90,7 @@ angular.module("quizApp", []).controller("QuizController", function ($timeout) {
         "Cria um novo serviço em um projeto Angular existente",
         "Cria um novo projeto Angular com a estrutura inicial",
       ],
-      answer: "Um módulo que fornece funcionalidades para outros módulos",
+      answer: "Cria um novo projeto Angular com a estrutura inicial",
     },
   ];
 
